@@ -61,11 +61,25 @@ namespace BSLibrary
         }
 
         public bool IsPlay { get; private set; }
-        public double ReturnValue { get; private set; }
-        public float _Time { get; private set; }
+        public double ReturnValue { get; set; }
+        public float _Time { get; set; }
 
         private Coroutine _coroutine;
-        private bool _isMotionComplete = false;
+
+        private bool _isMotionComplete;
+        
+        private bool isMotionComplete 
+        { 
+            get { return _isMotionComplete; }
+            set
+            {
+                _isMotionComplete = value;
+                if (motionCompleteEvent == null) return;
+                motionCompleteEvent(_isMotionComplete);
+            } 
+        }
+
+        public Action<bool> motionCompleteEvent;
 
         #region TweenFunctions
 
@@ -328,7 +342,10 @@ namespace BSLibrary
         {
             while (true)
             {
-                while (IsPause) { yield return new WaitForEndOfFrame(); }
+                while (IsPause) 
+                { 
+                    yield return new WaitForEndOfFrame(); 
+                }
 
                 ReturnValue = Play(_Time / RepeatTime);
                 yield return new WaitForFixedUpdate();
@@ -336,14 +353,13 @@ namespace BSLibrary
 
                 if (_Time >= RepeatTime && _isIncrease || _Time <= 0 && !_isIncrease)
                 {
-                    if (!IsRepeat && _LoopType != LoopType.Yoyo || _isMotionComplete && !IsRepeat)
+                    if (!IsRepeat && _LoopType != LoopType.Yoyo || isMotionComplete && !IsRepeat)
                     {
                         break;
                     }
-                    else if (!IsRepeat)
-                    {
-                        _isMotionComplete = true;
-                    }
+                    
+                    isMotionComplete = true;
+                    
 
                     switch (_LoopType)
                     {
@@ -367,24 +383,29 @@ namespace BSLibrary
                             }
                             break;
                     }
+
+                    isMotionComplete = false;
                 }
             }
         }
 
         public void Play()
         {
-            IsPause = false;
+            _Time = 0;
             _coroutine = StartCoroutine(StartPlay());
             IsPlay = true;
         }
 
         public void Stop()
         {
+            if (_coroutine == null) return;
+
             StopCoroutine(_coroutine);
+            _coroutine = null;
             _isIncrease = true;
             _Time = 0;
-            IsPlay = false;
             ReturnValue = 0;
+            IsPlay = false;
         }
 
         public void SetTween(TweenType tweenType, LoopType loopType, bool isRepeat, float repeatTime)
@@ -395,7 +416,7 @@ namespace BSLibrary
             RepeatTime = repeatTime;
             _isIncrease = true;
             _Time = 0;
-            _isMotionComplete = false;
+            isMotionComplete = false;
             ReturnValue = 0;
             IsPlay = false;
             IsPause = false;

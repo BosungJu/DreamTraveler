@@ -743,11 +743,11 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.16508052, y: 6.076226}
-      - {x: -12.1352625, y: 6.0455656}
+    - - {x: 0.16508052, y: 9.223967}
+      - {x: -12.480746, y: 8.8862095}
       - {x: -12.308502, y: -5.05984}
       - {x: 12.308502, y: -4.9360304}
-      - {x: 12.259073, y: 6.004296}
+      - {x: 12.489396, y: 8.9601}
 --- !u!1 &1984407787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1042,6 +1042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tween: {fileID: 2092160581}
+  rigid: {fileID: 2092160579}
 --- !u!114 &2092160581
 MonoBehaviour:
   m_ObjectHideFlags: 0
